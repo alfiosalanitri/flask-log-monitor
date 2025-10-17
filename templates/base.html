@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or 'Flask Log Viewer' }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
+
+  <nav class="bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between">
+    <div class="flex items-center space-x-6">
+      <a href="/" class="flex items-center gap-2 text-cyan-400 font-semibold hover:text-cyan-300">
+        <i data-lucide="home" class="w-5 h-5"></i> Home
+      </a>
+      <a href="/users" class="flex items-center gap-2 text-cyan-400 font-semibold hover:text-cyan-300">
+        <i data-lucide="users" class="w-5 h-5"></i> Users
+      </a>
+      <a href="/settings" class="flex items-center gap-2 text-cyan-400 font-semibold hover:text-cyan-300">
+        <i data-lucide="settings" class="w-5 h-5"></i> Settings
+      </a>
+      <form action="{{ url_for('delete_all_logs') }}" method="POST" onsubmit="return confirm('Are you sure?');" class="inline">
+        <button type="submit" class="flex items-center gap-2 text-red-600 px-3 py-1 rounded hover:text-red-700 transition">
+          <i data-lucide="trash-2" class="w-4 h-4"></i> Delete all logs
+        </button>
+      </form>
+    </div>
+    <div class="text-gray-400 text-sm flex items-center gap-2">
+      <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+      Flask Log Monitor
+    </div>
+  </nav>
+
+  <main class="flex-1 p-6 flex flex-col items-center">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="my-2">
+        {% for category, message in messages %}
+          <div class="p-3 rounded {{ 'bg-green-100 text-green-800' if category == 'success' else 'bg-red-100 text-red-800' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+</body>
+</html>

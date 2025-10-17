@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-semibold mb-6 text-cyan-400 tracking-wide flex items-center gap-2">
+  <i data-lucide="terminal-square" class="w-6 h-6 text-cyan-400"></i>
+  Logs for {{ user.name }}
+</h2>
+<form action="{{ url_for('delete_user_logs', user_id=user.id) }}" method="POST"
+        onsubmit="return confirm('Delete all logs for {{ user.name }}?');">
+    <button type="submit" class="flex items-center gap-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">
+      <i data-lucide="trash-2"></i> Delete Logs
+    </button>
+  </form>
+<a href="/" class="my-6 text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1">
+  <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Logs
+</a>
+
+<!-- Log container -->
+<div id="log-container"
+     class="w-full max-w-4xl flex flex-col space-y-4 overflow-y-auto rounded-xl p-2 h-[75vh]">
+  {% for log in logs %}
+    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-sm">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="user" class="w-5 h-5 text-cyan-400"></i>
+          <span class="font-semibold text-cyan-400 text-lg">{{ user.name }}</span>
+        </div>
+        <div class="text-xs text-gray-500 ml-4">
+          {{ log.created_at.strftime('%d/%m/%Y %H:%M:%S') }}
+        </div>
+      </div>
+
+      <!-- Log level -->
+      <div class="font-mono text-sm mb-2 flex items-center gap-2">
+        <span class="text-gray-400">Log level:</span>
+        {% set level_icon = {
+          'debug': 'bug',
+          'info': 'info',
+          'notice': 'info',
+          'warning': 'alert-triangle',
+          'error': 'x-circle',
+          'critical': 'alert-octagon',
+          'alert': 'bell',
+          'emergency': 'flame'
+        }[log.level] or 'dot' %}
+        <i data-lucide="{{ level_icon }}"
+           class="w-4 h-4
+           {% if log.level == 'debug' %}text-gray-400
+           {% elif log.level == 'info' %}text-sky-400
+           {% elif log.level == 'notice' %}text-blue-300
+           {% elif log.level == 'warning' %}text-yellow-400
+           {% elif log.level == 'error' %}text-red-400
+           {% elif log.level == 'critical' %}text-red-500
+           {% elif log.level == 'alert' %}text-orange-400
+           {% elif log.level == 'emergency' %}text-red-600
+           {% else %}text-gray-300{% endif %}">
+        </i>
+        <span class="
+          {% if log.level == 'debug' %}text-gray-400
+          {% elif log.level == 'info' %}text-sky-400
+          {% elif log.level == 'notice' %}text-blue-300
+          {% elif log.level == 'warning' %}text-yellow-400
+          {% elif log.level == 'error' %}text-red-400
+          {% elif log.level == 'critical' %}text-red-500 font-semibold
+          {% elif log.level == 'alert' %}text-orange-400 font-semibold
+          {% elif log.level == 'emergency' %}text-red-600 font-bold
+          {% else %}text-gray-200{% endif %}
+        ">
+          {{ log.level.upper() }}
+        </span>
+      </div>
+
+      <!-- Message -->
+      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
+        {{ log.message }}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Live update script -->
+<script>
+  const socket = io();
+  const container = document.getElementById('log-container');
+  const currentUser = "{{ user.name }}";
+
+  socket.on('new_log', (data) => {
+    if (data.user !== currentUser) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = "bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-sm animate-fade-in";
+
+    const colorClass = {
+      debug: "text-gray-400",
+      info: "text-sky-400",
+      notice: "text-blue-300",
+      warning: "text-yellow-400",
+      error: "text-red-400",
+      critical: "text-red-500 font-semibold",
+      alert: "text-orange-400 font-semibold",
+      emergency: "text-red-600 font-bold",
+      log: "text-gray-200"
+    }[data.level.toLowerCase()] || "text-gray-200";
+
+    const icon = {
+      debug: "bug",
+      info: "info",
+      notice: "info",
+      warning: "alert-triangle",
+      error: "x-circle",
+      critical: "alert-octagon",
+      alert: "bell",
+      emergency: "flame"
+    }[data.level.toLowerCase()] || "dot";
+
+    const createdAt = new Date(data.created_at || Date.now()).toLocaleString('en-GB');
+
+    wrapper.innerHTML = `
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="user" class="w-5 h-5 text-cyan-400"></i>
+          <span class="font-semibold text-cyan-400 text-lg">${data.user}</span>
+        </div>
+        <div class="text-xs text-gray-500 ml-4">${createdAt}</div>
+      </div>
+      <div class="font-mono text-sm mb-2 flex items-center gap-2">
+        <span class="text-gray-400">Log level:</span>
+        <i data-lucide="${icon}" class="w-4 h-4 ${colorClass.replace('font-semibold', '')}"></i>
+        <span class="${colorClass}">${data.level.toUpperCase()}</span>
+      </div>
+      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
+        ${data.message}
+      </div>
+    `;
+
+    container.insertBefore(wrapper, container.firstChild);
+    lucide.createIcons(wrapper);
+  });
+</script>
+
+<!-- Animation -->
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+</style>
+{% endblock %}

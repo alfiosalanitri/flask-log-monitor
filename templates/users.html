@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-semibold mb-6 text-cyan-400 tracking-wide">User Management</h2>
+
+<form id="createUserForm" class="space-y-4">
+  <div>
+    <label class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+    <input id="user_name" type="text" class="bg-gray-800 text-gray-100 rounded-lg px-3 py-2 w-full">
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+    <input id="user_email" type="email" class="bg-gray-800 text-gray-100 rounded-lg px-3 py-2 w-full">
+  </div>
+
+  <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg px-4 py-2 font-semibold w-full">
+    Create User
+  </button>
+</form>
+
+<div id="userList" class="w-full max-w-2xl space-y-4">
+  <div class="flex flex-col gap-4 mt-6">
+     {% for user in users %}
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 flex-row justify-between items-start sm:items-center gap-3 shadow-md hover:shadow-lg transition">
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <i data-lucide="user" class="w-5 h-5 text-sky-400"></i>
+              <h3 class="text-lg font-semibold text-sky-400">{{ user.name }}</h3>
+            </div>
+            <p class="text-gray-500 text-sm mt-1 select-all">
+              Email: <span class="text-gray-400">{{ user.email }}</span>
+            </p>
+            <p class="text-gray-500 text-sm mt-1 select-all">
+              Token: <span class="text-gray-400">{{ user.token }}</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-4 sm:ml-auto mt-10">
+            <!-- View logs -->
+            <a href="{{ url_for('logs_by_user', user_id=user.id) }}" 
+              class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition">
+              <i data-lucide="list" class="w-4 h-4"></i>
+              <span class="text-sm font-medium">View Logs</span>
+            </a>
+
+            <!-- Delete logs -->
+            <form action="{{ url_for('delete_user_logs', user_id=user.id) }}" method="POST"
+                  onsubmit="return confirm('Delete all logs for {{ user.name }}?');">
+              <button type="submit" 
+                      class="flex items-center gap-2 text-red-400 hover:text-red-300 transition">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                <span class="text-sm font-medium">Delete Logs</span>
+              </button>
+            </form>
+
+            <!-- Delete user -->
+            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST"
+                  onsubmit="return confirm('Delete user {{ user.name }} and all their logs?');">
+              <button type="submit" 
+                      class="flex items-center gap-2 text-red-500 hover:text-red-400 transition">
+                <i data-lucide="user-x" class="w-4 h-4"></i>
+                <span class="text-sm font-medium">Delete User</span>
+              </button>
+            </form>
+          </div>
+        </div>
+    {% else %}
+      <p class="text-gray-500 text-sm">No registered users.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('createUserForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('user_name').value;
+    const email = document.getElementById('user_email').value;
+
+    const res = await fetch('/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email })
+    });
+
+    if (res.ok) location.reload();
+  });
+</script>
+{% endblock %}
