@@ -213,6 +213,10 @@ You can run **Flask Log Monitor** easily with **Docker Compose**, using the publ
 
 ### `docker-compose.yml` (ghcr.io/alfiosalanitri/flask-log-monitor:latest)
 
+```bash
+cp .env.example .env
+```
+
 ```yaml
 services:
   app:
@@ -222,6 +226,8 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    volumes:
+      - .env:/app/.env
 ```
 
 To start the app in the background:
