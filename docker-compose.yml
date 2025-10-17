@@ -1,6 +1,5 @@
 services:
   app:
-    image: ghcr.io/alfiosalanitri/flask-log-monitor:latest
     build:
       context: .
       args:
