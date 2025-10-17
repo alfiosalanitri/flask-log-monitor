@@ -6,6 +6,22 @@ Each user has their own token and separate logs, with the option to receive noti
 
 ---
 
+## Screenshots
+
+### Homepage
+![home](screenshots/home.png)
+
+### Manage Users
+![users](screenshots/users.png)
+
+### Settings
+![settings](screenshots/settings.png)
+
+### Send Mail
+![send mail](screenshots/send-mail.png)
+
+---
+
 ## ⚠️ Security Notice
 
 > The **home page displays all logs from all users without any authentication or protection**.
