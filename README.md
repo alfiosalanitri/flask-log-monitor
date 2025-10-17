@@ -129,73 +129,28 @@ flask --app app cleanup
 
 ## 🧩 Laravel Integration
 
-### 1️⃣ Configure the channel in Laravel’s `.env`
+The easiest way to connect Laravel with Flask Log Monitor is by using the Composer package
+👉 **[alfiosalanitri/laravel-flask-logger](https://github.com/alfiosalanitri/laravel-flask-logger)**
+
+### 1️⃣ Install the package in Laravel
+
+```bash
+composer require alfiosalanitri/laravel-flask-logger
+```
+
+### 2️⃣ Configure environment variables
 
 ```env
 LOG_CHANNEL=stack
+LOG_STACK=flask,daily
 LOG_FLASK_URL=http://localhost:5000
 LOG_FLASK_TOKEN=token-generated-from-app
 LOG_FLASK_LEVEL=debug
 ```
 
-### 2️⃣ Edit `config/logging.php`
+That’s it — the package automatically registers the `flask` log channel and integrates seamlessly with Laravel’s logging system.
 
-```php
-'flask' => [
-    'driver' => 'monolog',
-    'level' => env('LOG_FLASK_LEVEL', 'debug'),
-    'url' => env('LOG_FLASK_URL', 'http://localhost:5000'),
-    'token' => env('LOG_FLASK_TOKEN', '1234'),
-    'handler' => \App\Logging\FlaskLogHandler::class,
-],
-
-'stack' => [
-    'driver' => 'stack',
-    'channels' => ['daily', 'flask'],
-],
-```
-
-### 3️⃣ `app/Logging/FlaskLogHandler.php`
-
-```php
-<?php
-
-namespace App\Logging;
-
-use Illuminate\Support\Facades\Http;
-use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Level;
-use Monolog\LogRecord;
-
-class FlaskLogHandler extends AbstractProcessingHandler
-{
-    protected string $url;
-    protected string $token;
-
-    public function __construct($level = Level::Debug, bool $bubble = true)
-    {
-        parent::__construct($level, $bubble);
-        $this->url = config('logging.channels.flask.url') . '/log';
-        $this->token = config('logging.channels.flask.token');
-    }
-
-    protected function write(array|LogRecord $record): void
-    {
-        try {
-            Http::withToken($this->token)
-                ->timeout(2)
-                ->post($this->url, [
-                    'level' => $record['level_name'],
-                    'message' => $record['message'],
-                ]);
-        } catch (\Throwable $e) {
-            \Log::channel('daily')->debug('Error sending log to Flask: ' . $e->getMessage());
-        }
-    }
-}
-```
-
-### 4️⃣ Test it!
+### 3️⃣ Test it!
 
 ```php
 Log::info('Hello from Laravel!');
