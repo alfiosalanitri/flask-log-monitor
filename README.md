@@ -203,11 +203,72 @@ curl -X POST http://localhost:5000/log \
 
 ## 🐳 Docker Compose
 
+Here’s the **English version** of the updated section for your README, clearly explaining how to use the image from GitHub Container Registry and what each part of the configuration does 👇
+
+---
+
+## 🐳 Docker Compose
+
+You can run **Flask Log Monitor** easily with **Docker Compose**, using the public image available on **GitHub Container Registry**.
+
 ### `docker-compose.yml`
+
+```yaml
+services:
+  app:
+    image: ghcr.io/alfiosalanitri/flask-log-monitor:latest
+    build:
+      context: .
+      args:
+        APP_PORT: ${APP_PORT:-5000}
+    ports:
+      - "${APP_PORT:-5000}:${APP_PORT:-5000}"
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - .:/app
+```
+
+### 🔧 Explanation
+
+* **image:** uses the official image published on GitHub (`ghcr.io/alfiosalanitri/flask-log-monitor:latest`).
+  You can also rebuild it locally thanks to the `build` section.
+* **args / ports:** allows port customization via the `APP_PORT` environment variable (default: `5000`).
+* **env_file:** automatically loads environment variables from your `.env` file.
+* **volumes:** mounts your local directory into the container (`/app`), useful for live code changes during development.
+* **restart:** automatically restarts the service if it crashes or the system reboots.
+
+### 🚀 Start the container
+
+To build and start the app in the background:
 
 ```bash
 docker compose up -d --build
 ```
+
+The application will be available at:
+
+```
+http://localhost:5000
+```
+
+(or on the port defined in `APP_PORT` inside your `.env` file)
+
+---
+
+### 🐋 Run with Docker only (optional)
+
+If you prefer to run the app directly without Docker Compose:
+
+```bash
+docker run -d \
+  -p 5000:5000 \
+  --env-file .env \
+  ghcr.io/alfiosalanitri/flask-log-monitor:latest
+```
+
+This command pulls the image from GitHub Container Registry and starts Flask Log Monitor on port **5000** with your environment configuration.
 
 ---
 
