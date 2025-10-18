@@ -44,7 +44,7 @@ Each user has their own token and separate logs, with the option to receive noti
 
 ---
 
-## ⚙️ Installation (Standalone Mode)
+## ⚙️ Installation (Standalone Mode) for development
 
 ### Clone the project
 
@@ -65,6 +65,19 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
+APP_DEBUG=True
+```
+
+### Generate ENCRYPTION_KEY= and save in the .env file 
+
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+### Run
+
+```bash
+python ./app.py
 ```
 
 ---

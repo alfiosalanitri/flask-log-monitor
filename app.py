@@ -317,4 +317,4 @@ def cleanup_old_logs():
 if __name__ == '__main__':
     port = int(os.getenv("APP_PORT", 5000))
     print(f"Flask Log Monitor running on http://127.0.0.1:{port}")
-    socketio.run(app, host='0.0.0.0', port=port)
+    socketio.run(app, host='0.0.0.0', port=port, debug=os.getenv('APP_DEBUG', False))
