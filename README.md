@@ -71,7 +71,7 @@ APP_DEBUG=True
 ### Generate ENCRYPTION_KEY= and save in the .env file 
 
 ```bash
-python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+docker run --rm ghcr.io/alfiosalanitri/docker-fernet-key-generator:latest
 ```
 
 ### Run
