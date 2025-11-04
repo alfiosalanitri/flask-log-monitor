@@ -275,7 +275,7 @@ This command pulls the image from GitHub Container Registry and starts Flask Log
 * Generate the encryption key once:
 
   ```bash
-  python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+  docker run --rm ghcr.io/alfiosalanitri/docker-fernet-key-generator:latest
   ```
 * Passwords updated from the web interface are **automatically encrypted**
 * New logs appear live and remain visible until manually deleted
