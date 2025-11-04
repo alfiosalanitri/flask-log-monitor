@@ -10,9 +10,7 @@
 <body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
 
   <nav class="bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between">
-    <div class="flex items-center space-x-2">
-          <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i> <span>Flask Log Monitor</span>
-    </div>
+    <a class="flex items-center space-x-2" href="/"><i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i> <span>Flask Log Monitor</span></a>
     <div class="flex items-center space-x-6">
       <a href="/" class="flex items-center gap-2 text-cyan-400 font-semibold hover:text-cyan-300">
         <i data-lucide="home" class="w-5 h-5"></i> Home
@@ -31,7 +29,7 @@
     </div>
     <div class="text-gray-400 text-sm flex items-center gap-2">
       <a href="https://github.com/alfiosalanitri/flask-log-monitor" class="text-white flex space-x-2" target="_blank" title="Github">
-        <i data-lucide="github" class="w-5 h-5"></i><span>v1.0.5</span>
+        <i data-lucide="github" class="w-5 h-5"></i><span>{{app_version}}</span>
       </a>
     </div>
   </nav>

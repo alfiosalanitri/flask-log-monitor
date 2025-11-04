@@ -31,6 +31,17 @@ LOG_RETENTION_DAYS = int(os.getenv("LOG_RETENTION_DAYS", "7"))
 with app.app_context():
     db.create_all()
 
+def get_version():
+    try:
+        with open("version") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return "v.0"
+
+@app.context_processor
+def inject_version():
+    return {"app_version": get_version()}
+
 # ---------------------------------------------------------
 # Utility functions (.env management + encryption)
 # ---------------------------------------------------------

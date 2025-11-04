@@ -2,12 +2,7 @@
 
 set -e
 
-if [[ -z "$1" ]]; then
-  echo "Usage: ./release.sh vX.Y.Z"
-  exit 1
-fi
-
-VERSION="$1"
+VERSION="$(cat ./version)"
 
 if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Error: Version must follow semantic versioning format, e.g., v1.0.0"
