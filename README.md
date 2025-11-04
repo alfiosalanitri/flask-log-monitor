@@ -6,6 +6,70 @@ Each user has their own token and separate logs, with the option to receive noti
 
 ---
 
+## 🐋 How to use with Docker
+
+### Create and configure the `.env` file
+
+```bash
+vim .env
+
+# ==========================================================
+# BASE CONFIGURATION — FLASK LOG MONITOR
+# ==========================================================
+APP_PORT=5000
+APP_DEBUG=False
+DATABASE_URL=sqlite:///logs.db
+FLASK_ENV=production
+SECRET_KEY=super-secret-key-123
+
+# ==========================================================
+# SMTP PASSWORD ENCRYPTION
+# ==========================================================
+# Generate a key with:
+# docker run --rm ghcr.io/alfiosalanitri/docker-fernet-key-generator:latest
+ENCRYPTION_KEY=
+
+# ==========================================================
+# TIPS
+# ==========================================================
+# ⚙️ The following options can be modified directly from the application's
+# Settings page. Changes made there will automatically update these values.
+
+# ==========================================================
+# LOG RETENTION
+# ==========================================================
+# Number of days after which logs are automatically deleted
+LOG_RETENTION_DAYS=7
+
+# ==========================================================
+# EMAIL SETTINGS (SMTP)
+# ==========================================================
+SMTP_ENABLED=false
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASSWORD=ENCRYPTED:...
+SMTP_USE_TLS=true
+SMTP_FROM_EMAIL=
+```
+
+### Docker run
+
+```bash
+docker run -d \
+  -p 5000:5000 \
+  --env-file .env \
+  ghcr.io/alfiosalanitri/flask-log-monitor:latest
+```
+
+The application will be available at:
+
+```
+http://localhost:5000
+```
+
+---
+
 ## Screenshots
 
 ### Homepage
@@ -182,12 +246,6 @@ curl -X POST http://localhost:5000/log \
   -H "Content-Type: application/json" \
   -d '{"level": "warning", "message": "Manual log test via curl"}'
 ```
-
----
-
-## 🐳 Docker Compose
-
-Here’s the **English version** of the updated section for your README, clearly explaining how to use the image from GitHub Container Registry and what each part of the configuration does 👇
 
 ---
 
