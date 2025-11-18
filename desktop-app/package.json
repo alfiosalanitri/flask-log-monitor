@@ -1,0 +1,39 @@
+{
+  "name": "flask-log-monitor-desktop",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": {
+    "name": "Alfio Salanitri",
+    "url": "https://www.alfiosalanitri.it"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --linux AppImage"
+  },
+  "build": {
+    "appId": "com.alfiosalanitri.flasklogmonitor",
+    "productName": "FlaskLogMonitor",
+    "files": [
+      "**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend",
+        "to": "backend"
+      },
+      {
+        "from": "../scripts",
+        "to": "scripts"
+      }
+    ],
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility",
+      "icon": "icon.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}
