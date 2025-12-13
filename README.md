@@ -270,6 +270,9 @@ services:
     restart: unless-stopped
     volumes:
       - .env:/app/.env
+      - db_data:/app/instance # persistent database data (optional)
+volumes:
+  db_data:
 ```
 
 To start the app in the background:
