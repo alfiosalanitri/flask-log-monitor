@@ -4,11 +4,16 @@
 
 FROM python:3.11-slim
 
+ARG APP_VERSION
+ENV APP_VERSION=$APP_VERSION
+
 # Set working directory
 WORKDIR /app
 
 # Copy source code and dependencies
 COPY . .
+
+RUN echo "$APP_VERSION" > /app/version
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
