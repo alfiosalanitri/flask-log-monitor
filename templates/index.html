@@ -73,7 +73,7 @@
         </span>
       </div>
 
-      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
+      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-96 overflow-y-auto">
         {{ log.message }}
       </div>
     </div>
@@ -127,7 +127,7 @@
         <i data-lucide="${icon}" class="w-4 h-4 ${colorClass.replace('font-semibold', '')}"></i>
         <span class="${colorClass}">${data.level.toUpperCase()}</span>
       </div>
-      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
+      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-96 overflow-y-auto">
         ${data.message}
       </div>
     `;
