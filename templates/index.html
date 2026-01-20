@@ -73,7 +73,7 @@
         </span>
       </div>
 
-      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
+      <div data-log-message class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-96 overflow-y-auto whitespace-pre-wrap">
         {{ log.message }}
       </div>
 
@@ -133,8 +133,8 @@
         <i data-lucide="${icon}" class="w-4 h-4 ${colorClass.replace('font-semibold', '')}"></i>
         <span class="${colorClass}">${data.level.toUpperCase()}</span>
       </div>
-      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
-        ${data.message}
+      <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-96 overflow-y-auto whitespace-pre-wrap">
+        ${formatMessage(data.message)}
       </div>
 
       ${data.context ? `
@@ -147,6 +147,31 @@
     container.insertBefore(wrapper, container.firstChild);
     lucide.createIcons(wrapper);
   });
+
+  document.querySelectorAll('[data-log-message]').forEach(el => {
+    el.textContent = formatMessage(el.textContent);
+  });
+
+  function formatMessage(message) {
+    if (typeof message !== 'string') {
+      return JSON.stringify(message, null, 2);
+    }
+
+    const trimmed = message.trim();
+
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return JSON.stringify(parsed, null, 2);
+      } catch (e) {
+        // Non è JSON valido → ritorna testo originale
+        return message;
+      }
+    }
+
+    return message;
+  }
+
 </script>
 
 <style>

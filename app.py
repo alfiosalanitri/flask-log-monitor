@@ -133,7 +133,10 @@ def receive_log():
     data = request.get_json() or {}
     message = data.get('message', '').strip() or 'Empty log'
     level = (data.get('level') or 'info').lower()
-    context = data.get('context')
+    context = data.get("context")
+    if not isinstance(context, (dict, list)):
+        context = None
+
     log_entry = Log(message=message, level=level, user=user, context=context)
     db.session.add(log_entry)
     db.session.commit()

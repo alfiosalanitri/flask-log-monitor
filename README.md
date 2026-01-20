@@ -141,7 +141,7 @@ docker run --rm ghcr.io/alfiosalanitri/docker-fernet-key-generator:latest
 ### Run
 
 ```bash
-python ./app.py
+python ./app.py (or flask run)
 ```
 
 ---
@@ -232,6 +232,7 @@ That’s it — the package automatically registers the `flask` log channel and 
 ```php
 Log::info('Hello from Laravel!');
 Log::error('Something went wrong!');
+Log::critical('Something went wrong!', ['foo' => 'bar']);
 ```
 
 ➡️ You’ll see the messages appear live — and receive an email if configured.
@@ -270,6 +271,9 @@ services:
     restart: unless-stopped
     volumes:
       - .env:/app/.env
+      - db_data:/app/instance # persistent database data (optional)
+volumes:
+  db_data:
 ```
 
 To start the app in the background:
