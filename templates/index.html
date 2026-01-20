@@ -76,6 +76,12 @@
       <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
         {{ log.message }}
       </div>
+
+      {% if log.context %}
+        <div class="mt-3 bg-gray-950 border border-gray-800 rounded-lg p-3 text-xs font-mono text-cyan-200 overflow-x-auto">
+          <pre>{{ log.context | tojson(indent=2) }}</pre>
+        </div>
+      {% endif %}
     </div>
   {% endfor %}
 </div>
@@ -130,6 +136,12 @@
       <div class="bg-gray-800/50 rounded-lg p-3 text-sm font-mono text-gray-200 max-h-24 overflow-y-auto">
         ${data.message}
       </div>
+
+      ${data.context ? `
+        <div class="mt-3 bg-gray-950 border border-gray-800 rounded-lg p-3 text-xs font-mono text-cyan-200 overflow-x-auto">
+          <pre>${JSON.stringify(data.context, null, 2)}</pre>
+        </div>
+        ` : ""}
     `;
 
     container.insertBefore(wrapper, container.firstChild);

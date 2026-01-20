@@ -133,8 +133,8 @@ def receive_log():
     data = request.get_json() or {}
     message = data.get('message', '').strip() or 'Empty log'
     level = (data.get('level') or 'info').lower()
-
-    log_entry = Log(message=message, level=level, user=user)
+    context = data.get('context')
+    log_entry = Log(message=message, level=level, user=user, context=context)
     db.session.add(log_entry)
     db.session.commit()
 
@@ -144,6 +144,7 @@ def receive_log():
         'message': message,
         'level': level,
         'user': user.name,
+        'context': context,
         'created_at': (log_entry.created_at + timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')
     })
 

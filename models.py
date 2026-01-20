@@ -15,6 +15,7 @@ class Log(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     level = db.Column(db.String(32), nullable=False)
     message = db.Column(db.Text, nullable=False)
+    context = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
